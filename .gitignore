@@ -1,0 +1,40 @@
+# Arquivos do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ambiente virtual
+venv/
+env/
+.venv/
+
+# Banco de dados SQLite (comum em desenvolvimento)
+*.sqlite3
+*.db
+
+# Arquivos de configuração sensíveis
+.env
+.env.local
+.secrets
+
+# Arquivos do IDE/Editor
+.vscode/
+.idea/
+
+# Arquivos estáticos coletados (em produção)
+/staticfiles/
+
+# Arquivos de mídia (uploads)
+/media/
+
+# Logs e cache
+*.log
+*.pot
+*.pyc
+.cache/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db

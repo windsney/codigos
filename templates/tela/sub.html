@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siga @capitao.janeferson</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --azul-primario: #e6f2ff;
+            --azul-destaque: #007bff;
+            --gradiente-instagram: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: var(--azul-primario);
+        }
+        
+        .convite-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 5px solid var(--azul-destaque);
+        }
+        
+        .foto-perfil {
+            height: 100%;
+            min-height: 500px;
+            object-fit: cover;
+            object-position: center;
+            border-right: 3px solid var(--azul-destaque);
+        }
+        
+        .conteudo-convite {
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background: white;
+        }
+        
+        .titulo-convite {
+            color: var(--azul-destaque);
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .texto-convite {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .instagram-btn {
+            background: var(--gradiente-instagram);
+            color: white !important;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            text-decoration: none;
+            display: inline-block;
+            width: fit-content;
+            margin: 20px auto;
+            box-shadow: 0 4px 15px rgba(193, 53, 132, 0.4);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .instagram-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(193, 53, 132, 0.5);
+            color: white;
+        }
+        
+        .qrcode-container {
+            background: var(--azul-primario);
+            border-radius: 15px;
+            padding: 20px;
+            display: inline-block;
+            margin: 30px auto 0;
+            text-align: center;
+            border: 2px dashed var(--azul-destaque);
+        }
+        
+        .qrcode {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        .qrcode-text {
+            margin-top: 15px;
+            font-weight: 600;
+            color: var(--azul-destaque);
+            font-size: 1rem;
+        }
+        
+        .badge-oficial {
+            background: var(--azul-destaque);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .foto-perfil {
+                height: 300px;
+                width: 100%;
+                border-right: none;
+                border-bottom: 3px solid var(--azul-destaque);
+            }
+            
+            .conteudo-convite {
+                padding: 30px;
+            }
+            
+            .titulo-convite {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="convite-container">
+            <div class="row g-0">
+                <!-- Foto do Perfil -->
+                <div class="col-lg-6">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80" 
+                         class="foto-perfil w-100" 
+                         alt="Capitão Janeferson">
+                </div>
+                
+                <!-- Conteúdo do Convite -->
+                <div class="col-lg-6">
+                    <div class="conteudo-convite">
+                        <span class="badge-oficial">CONTA OFICIAL</span>
+                        <h1 class="titulo-convite">Siga nosso Instagram</h1>
+                        
+                        <p class="texto-convite">
+                            Acompanhe as últimas notícias, ações policiais e conteúdo exclusivo 
+                            seguindo o perfil oficial do Capitão Janeferson no Instagram.
+                        </p>
+                        
+                        <a href="https://www.instagram.com/capitao.janeferson?igsh=MXUwMW43YnJ4Z3B4eQ==" 
+                           target="_blank" 
+                           class="instagram-btn">
+                            <i class="fab fa-instagram me-2"></i> @capitao.janeferson
+                        </a>
+                        
+                        <!-- Container do QR Code -->
+                        <div class="qrcode-container">
+                            <div class="qrcode">
+                                <!-- QR Code gerado com o link real -->
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://www.instagram.com/capitao.janeferson?igsh=MXUwMW43YnJ4Z3B4eQ==&format=svg&color=007bff&bgcolor=e6f2ff" 
+                                     alt="QR Code Instagram" 
+                                     class="img-fluid">
+                            </div>
+                            <p class="qrcode-text">Aponte a câmera do celular para seguir</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Animação de entrada -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const elements = document.querySelectorAll('.badge-oficial, .titulo-convite, .texto-convite, .instagram-btn, .qrcode-container');
+            
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'all 0.5s ease-out';
+                
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
+        });
+    </script>
+</body>
+</html>

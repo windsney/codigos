@@ -1,0 +1,216 @@
+<!-- crimes/templates/crimes/mapa_publico.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --danger-color: #e74c3c;
+            --morte-color: hsl(0, 0%, 1%);
+            --success-color: #2ecc71;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .container {
+            width: 95%;
+            margin: 1rem auto;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .sidebar {
+            flex: 1;
+            min-width: 300px;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 5px;
+            margin-right: 1rem;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .map-container {
+            flex: 3;
+            min-width: 300px;
+            height: 700px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .stats-card {
+            background: white;
+            border-radius: 5px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 5px;
+            background: white;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .filter-form {
+            margin-bottom: 1rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        select, button {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #1a252f;
+        }
+        .reset-btn {
+            background-color: #95a5a6;
+        }
+        .footer {
+            text-align: center;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .sidebar {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-map-marked-alt"></i> {{ titulo }}</h1>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar">
+            <div class="stats-card">
+                <h2><i class="fas fa-chart-bar"></i> Estatísticas</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">{{ total_crimes }}</div>
+                        <div class="stat-label">Total de Ocorrências</div>
+                    </div>
+                    <div class="stat-item" style="color: var(--danger-color);">
+                        <div class="stat-value">{{ roubos }}</div>
+                        <div class="stat-label">Roubos</div>
+                    </div>
+                    <div class="stat-item" style="color: var(--secondary-color);">
+                        <div class="stat-value">{{ furtos }}</div>
+                        <div class="stat-label">Furtos</div>
+                    </div>
+                    <div class="stat-item" style="color: var(--morte-color);">
+                        <div class="stat-value">{{ homicidios }}</div>
+                        <div class="stat-label">Homicidios</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stats-card">
+                <h2><i class="fas fa-filter"></i> Filtros</h2>
+                <form method="get" class="filter-form">
+                    <div class="form-group">
+                        <label for="tipo">Tipo de Crime:</label>
+                        <select id="tipo" name="tipo">
+                            <option value="">Todos</option>
+                            <option value="ROUBO" {% if tipo_filtro == 'ROUBO' %}selected{% endif %}>Roubo</option>
+                            <option value="FURTO" {% if tipo_filtro == 'FURTO' %}selected{% endif %}>Furto</option>
+                            <option value="HOMICIDIO" {% if tipo_filtro == 'HOMICIDIO' %}selected{% endif %}>Homicidio</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bairro">Bairro:</label>
+                        <select id="bairro" name="bairro">
+                            <option value="">Todos</option>
+                            {% for b in bairros %}
+                                <option value="{{ b }}" {% if bairro_filtro == b %}selected{% endif %}>{{ b }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <button type="submit"><i class="fas fa-search"></i> Aplicar Filtros</button>
+                    <a href="?" class="reset-btn" style="display: inline-block; text-align: center; margin-top: 0.5rem; text-decoration: none;">
+                        <i class="fas fa-undo"></i> Limpar Filtros
+                    </a>
+                </form>
+            </div>
+            
+            <div class="stats-card">
+                <h2><i class="fas fa-info-circle"></i> Legenda</h2>
+                <p><i class="fas fa-fire" style="color: red;"></i> <strong>Mapa de Calor:</strong> Áreas com maior concentração de crimes</p>
+                <p><i class="fas fa-map-marker-alt" style="color: red;"></i> <strong>Marcadores Vermelhos:</strong> Roubos</p>
+                <p><i class="fas fa-map-marker-alt" style="color: blue;"></i> <strong>Marcadores Azuis:</strong> Furtos</p>
+                <p><i class="fas fa-map-marker-alt" style="color: rgb(8, 8, 8);"></i> <strong>Marcadores Pretos:</strong> Homicidios</p>
+                <p><i class="fas fa-expand"></i> Use o botão de tela cheia para melhor visualização</p>
+            </div>
+        </div>
+        
+        <div class="map-container">
+            {{ mapa|safe }}
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Seção de Planejamento e Estatística do 5º BPM</p>
+        <p>Desenvolvido por Cap PM Windsney</p>
+        <p>Dados atualizados em {% now "d/m/Y H:i" %}</p>
+    </div>
+
+    {% if GOOGLE_MAPS_API_KEY %}
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&libraries=places"></script>
+    {% endif %}
+</body>
+</html>
