@@ -23,3 +23,6 @@ def noticias(request):
 
 class sub(TemplateView):
     template_name = "tela/sub.html"
+
+class teste(TemplateView):
+    template_name = "tela/teste.html"

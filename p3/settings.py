@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'leaflet',
     'crimes',
+    'pessoal',
 ]
 
 LEAFLET_CONFIG = {
@@ -97,6 +98,8 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+SPATIALITE_LIBRARY_PATH = 'mod_spatialite'
 
 
 # Password validation

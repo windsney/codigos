@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">{{ titulo }}</h1>
+        <span class="badge badge-primary">
+            
+        </span>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Posto/Grad</th>
+                            <th>Nome</th>
+                            <th>QRA</th>
+                            <th>Unidade</th>
+                            <th>RGPMMT</th>
+                            <th>Função</th>
+                            <th>Situação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for militar in militares %}
+                        <tr>
+                            <td>{{ militar.posto_grad }}</td>
+                            <td>{{ militar.nome }}</td>
+                            <td>{{ militar.qra }}</td>
+                            <td>{{ militar.unidade }}</td>
+                            <td>{{ militar.rgpm }}</td>
+                            <td>{{ militar.sub_lotacao_funcao }}</td>
+                            <td>
+                                <span class="badge 
+                                    {% if militar.situacao_atual == 'Ativo' %}badge-success text-white
+                                    {% elif militar.situacao_atual == 'Licenciado' %}badge-danger text-white
+                                    {% else %}badge-warning text-dark{% endif %}">
+                                    {{ militar.situacao_atual }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">Nenhum militar encontrado</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <p>Total={{ total_militares }}</p>
+            </div>
+            
+            {% if is_paginated %}
+            <div class="mt-4">
+                {% include 'paginacao.html' %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

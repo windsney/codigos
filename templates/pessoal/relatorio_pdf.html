@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório de Militares</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        h1 { color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Relatório de Militares</h1>
+    <p><strong>Filtro aplicado:</strong> {{ filtro }}</p>
+    <p><strong>Total registros:</strong> {{ total }}</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Posto/Grad</th>
+                <th>Nome</th>
+                <th>Unidade</th>
+                <th>Situação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for militar in militares %}
+            <tr>
+                <td>{{ militar.posto_grad }}</td>
+                <td>{{ militar.nome }}</td>
+                <td>{{ militar.unidade }}</td>
+                <td>{{ militar.situacao_atual }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

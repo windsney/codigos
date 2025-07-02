@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestão de marcas Criminais</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        header {
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        nav {
+            background-color: #34495e;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        nav a:hover {
+            background-color: #55708a;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .chart-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fdfdfd;
+        }
+        .chart-section h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            background-color: #2c3e50;
+            color: #ffffff;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Styles for the new full-width carousel */
+        .full-width-carousel {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 30px; /* Space between carousel and charts */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .carousel-slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .carousel-slide {
+            min-width: 100%; /* Each slide takes full width */
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 400px; /* Fixed height for consistency */
+            object-fit: cover; /* Ensures image covers the area without distortion */
+            display: block;
+        }
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        .carousel-control {
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 1.5em;
+            transition: background-color 0.3s ease;
+            z-index: 10;
+        }
+        .carousel-control:hover {
+            background-color: rgba(0,0,0,0.8);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Sistema de Gestão de Índices Criminais</h1>
+        <p>Análise e Visualização de Dados de Criminalidade</p>
+    </header>
+
+    <nav>
+        <a href="#overview">Visão Geral</a>
+        <a href="#types">Tipos de Crimes</a>
+        <a href="#regions">Por Região</a>
+        <a href="#trends">Tendências Anuais</a>
+    </nav>
+
+    <div class="full-width-carousel">
+        <div class="carousel-slides">
+            <div class="carousel-slide">
+                <img src="https://via.placeholder.com/1200x400/FF5733/FFFFFF?text=Mapa+de+Criminalidade" alt="Mapa de Criminalidade">
+            </div>
+            <div class="carousel-slide">
+                <img src="https://via.placeholder.com/1200x400/33FF57/FFFFFF?text=Delegacia+de+Policia" alt="Delegacia de Policia">
+            </div>
+            <div class="carousel-slide">
+                <img src="https://via.placeholder.com/1200x400/3357FF/FFFFFF?text=Cena+de+Crime" alt="Cena de Crime">
+            </div>
+        </div>
+        <div class="carousel-controls">
+            <button class="carousel-control" id="prevSlide">&#10094;</button>
+            <button class="carousel-control" id="nextSlide">&#10095;</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <section id="overview" class="chart-section">
+            <h2>Visão Geral da Criminalidade (Total de Ocorrências)</h2>
+            <canvas id="totalCrimesChart"></canvas>
+        </section>
+
+        <section id="types" class="chart-section">
+            <h2>Crimes por Tipo</h2>
+            <canvas id="crimesByTypeChart"></canvas>
+        </section>
+
+        <section id="regions" class="chart-section">
+            <h2>Ocorrências por Região</h2>
+            <canvas id="crimesByRegionChart"></canvas>
+        </section>
+
+        <section id="trends" class="chart-section">
+            <h2>Tendência Anual de Criminalidade</h2>
+            <canvas id="annualTrendChart"></canvas>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Sistema de Gestão de Índices Criminais. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        // Script para o Carrossel de Imagens
+        const slides = document.querySelector('.carousel-slides');
+        const totalSlides = document.querySelectorAll('.carousel-slide').length;
+        let currentSlide = 0;
+
+        document.getElementById('nextSlide').addEventListener('click', () => {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateCarousel();
+        });
+
+        document.getElementById('prevSlide').addEventListener('click', () => {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateCarousel();
+        });
+
+        function updateCarousel() {
+            const offset = -currentSlide * 100; // Move 100% for each slide
+            slides.style.transform = `translateX(${offset}%)`;
+        }
+
+        // Dados de exemplo (você pode substituir por dados reais de um backend)
+        const totalCrimesData = {
+            labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho'],
+            datasets: [{
+                label: 'Total de Ocorrências',
+                data: [120, 150, 130, 180, 160, 190],
+                backgroundColor: 'rgba(52, 152, 219, 0.6)',
+                borderColor: 'rgba(52, 152, 219, 1)',
+                borderWidth: 1
+            }]
+        };
+
+        const crimesByTypesData = {
+            labels: ['Roubo', 'Furto', 'Homicídio', 'Tráfico', 'Lesão Corporal', 'Outros'],
+            datasets: [{
+                label: 'Número de Ocorrências',
+                data: [300, 250, 50, 80, 120, 100],
+                backgroundColor: [
+                    'rgba(231, 76, 60, 0.7)', // Roubo
+                    'rgba(46, 204, 113, 0.7)', // Furto
+                    'rgba(155, 89, 182, 0.7)', // Homicídio
+                    'rgba(241, 196, 15, 0.7)', // Tráfico
+                    'rgba(52, 73, 94, 0.7)', // Lesão Corporal
+                    'rgba(149, 165, 166, 0.7)'  // Outros
+                ],
+                borderColor: [
+                    'rgba(231, 76, 60, 1)',
+                    'rgba(46, 204, 113, 1)',
+                    'rgba(155, 89, 182, 1)',
+                    'rgba(241, 196, 15, 1)',
+                    'rgba(52, 73, 94, 1)',
+                    'rgba(149, 165, 166, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        const crimesByRegionData = {
+            labels: ['Zona Norte', 'Zona Sul', 'Zona Leste', 'Zona Oeste', 'Centro'],
+            datasets: [{
+                label: 'Ocorrências por Região',
+                data: [200, 180, 250, 150, 100],
+                backgroundColor: 'rgba(26, 188, 156, 0.7)',
+                borderColor: 'rgba(26, 188, 156, 1)',
+                borderWidth: 1
+            }]
+        };
+
+        const annualTrendData = {
+            labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+            datasets: [{
+                label: 'Número Anual de Crimes',
+                data: [1500, 1650, 1400, 1750, 1600, 1800],
+                backgroundColor: 'rgba(243, 156, 18, 0.6)',
+                borderColor: 'rgba(243, 156, 18, 1)',
+                borderWidth: 1,
+                fill: false, // Não preencher a área abaixo da linha
+                tension: 0.1 // Suaviza a linha
+            }]
+        };
+
+        // Renderiza os gráficos
+        new Chart(document.getElementById('totalCrimesChart'), {
+            type: 'bar',
+            data: totalCrimesData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('crimesByTypeChart'), {
+            type: 'pie',
+            data: crimesByTypesData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += context.parsed;
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('crimesByRegionChart'), {
+            type: 'bar',
+            data: crimesByRegionData,
+            options: {
+                indexAxis: 'y', // Gráfico de barras horizontal
+                responsive: true,
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('annualTrendChart'), {
+            type: 'line',
+            data: annualTrendData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

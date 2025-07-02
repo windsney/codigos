@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Pesquisa de Militares</h1>
+    <span class="badge badge-info ml-2">
+    <p>Total filtrado: {{ militares.count }}</p>
+    </span>
+    
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <form id="filtroForm" method="GET" action="{% url 'nome_da_url_pesquisa' %}">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="campo_filtro">Filtrar por:</label>
+                        <select class="form-control" id="campo_filtro" name="campo_filtro">
+                            <option value="">Selecione um campo...</option>
+                            <option value="unidade">Unidade</option>
+                            <option value="situacao_atual">Situação Atual</option>
+                            <option value="posto_grad">Posto/Graduação</option>
+                            <option value="detalhes_situacao">Detalhes da Situação</option>
+                            <option value="validade_cnh">Validade da CNH</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="valor_filtro">Valor do filtro:</label>
+                        <select class="form-control" id="valor_filtro" name="valor_filtro" disabled>
+                            <option value="">Selecione primeiro um campo...</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Aplicar Filtro</button>
+            </form>
+        </div>
+        <div class="card-footer">
+        <a href="{% url 'exportar_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-danger">
+            <i class="fas fa-file-pdf"></i> Exportar PDF
+        </a>
+        </div>
+    </div>
+
+    <!-- Tabela de resultados (será preenchida via AJAX ou recarregamento de página) -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="tabelaResultados" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Validade CNH</th>
+                            <th>Validade RGPM</th>
+                            <th>Situação</th>
+                            <th>WhatsApp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for militar in militares %}
+                            <tr {% if militar.validade_cnh < now or militar.validade_rgpm < now %}class="table-danger"{% endif %}>
+                                
+                                <td>{{ militar.posto_grad }} {{ militar.nome }}</td>
+                                
+                                
+                                <td {% if militar.validade_cnh < now %}style="color: red; font-weight: bold;"{% endif %}>
+                                    {{ militar.validade_cnh|date:"d/m/Y" }}
+                                    {% if militar.validade_cnh < now %}(Vencida){% endif %}
+                                
+                                </td>
+                                <td {% if militar.validade_rgpm < now %}style="color: red; font-weight: bold;"{% endif %}>
+                                    {{ militar.validade_rgpm|date:"d/m/Y" }}
+                                    {% if militar.validade_rgpm < now %}(RGPM Vencido){% endif %}
+                                </td>
+                                <td>{{ militar.situacao_atual }}</td>
+
+                                <td>
+                                    {% if militar.telefone %}
+                                        <a 
+                                            href="https://wa.me/55{{ militar.telefone|cut:' '|cut:'('|cut:')'|cut:'-' }}" 
+                                            target="_blank"
+                                            class="btn btn-success btn-sm"
+                                            title="Iniciar conversa"
+                                        >
+                                            <i class="fab fa-whatsapp"></i> WhatsApp
+                                        </a>
+                                    {% else %}
+                                        <span class="text-muted">Sem telefone</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">Nenhum resultado encontrado.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Quando o campo de filtro principal muda
+    $("#campo_filtro").change(function() {
+        var campo = $(this).val();
+        
+        if (campo) {
+            // Habilita o segundo select
+            $("#valor_filtro").prop("disabled", false);
+            
+            // Faz uma requisição AJAX para buscar os valores possíveis
+            $.ajax({
+                url: "{% url 'buscar_valores_filtro' %}",
+                data: {
+                    'campo': campo
+                },
+                success: function(data) {
+                    // Limpa e preenche o segundo select
+                    var $valorFiltro = $("#valor_filtro");
+                    $valorFiltro.empty();
+                    
+                    if (data.valores && data.valores.length > 0) {
+                        $valorFiltro.append('<option value="">Selecione...</option>');
+                        $.each(data.valores, function(key, value) {
+                            $valorFiltro.append('<option value="' + value + '">' + value + '</option>');
+                        });
+                    } else {
+                        $valorFiltro.append('<option value="">Nenhuma opção disponível</option>');
+                    }
+                }
+            });
+        } else {
+            // Desabilita o segundo select se nenhum campo for selecionado
+            $("#valor_filtro").prop("disabled", true).empty().append('<option value="">Selecione primeiro um campo...</option>');
+        }
+    });
+});
+</script>
+{% endblock %}
